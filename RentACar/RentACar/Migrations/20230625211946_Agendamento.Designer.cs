@@ -12,7 +12,7 @@ using RentACar.Data;
 namespace RentACar.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230619003611_Agendamento")]
+    [Migration("20230625211946_Agendamento")]
     partial class Agendamento
     {
         /// <inheritdoc />
@@ -39,7 +39,10 @@ namespace RentACar.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Data")
+                    b.Property<DateTime>("DataFim")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataInicio")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");

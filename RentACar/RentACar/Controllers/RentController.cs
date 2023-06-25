@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RentACar.DTOs;
-using RentACar.Services.CarService;
+using Microsoft.IdentityModel.Tokens;
+using RentACar.Data.CMD;
+using RentACar.Data.Form;
 
 namespace RentACar.Controllers
 {
@@ -26,39 +27,39 @@ namespace RentACar.Controllers
         #endregion construtor
         //-------------------------------------------------------------
 
-        [HttpGet]
+        [HttpPost]
         [Route( "api/RentController/ListCars" )]
-        public async Task<ActionResult<Car>> ListCars( CarCreateDto request )
+        public async Task<ActionResult<Car>> ListCars( ListCarsForm form )
         {
-            var car = await _context.Cars.FindAsync( request.Nome, request.Modelo, request.Valor );
+            var cars = _context.Cars.Where( x => x.Marca.Contains( form.Nome ) )
+                        .Where(x => x.Marca.Contains( form.Modelo ))
+                        .Where(x => x.Marca.Contains( form.Marca ))
+                        .ToArrayAsync();
+
+            if( cars != null )
+                return Ok( await cars );
+            else
+                return NotFound( "Não foi encontrado nenhum carro." );
         }
 
         //-------------------------------------------------------------
-        [HttpGet]
-        [Route( "api/RentController/CreateCliente" )]
-        public async Task<ActionResult<Car>> CreateCliente( ClienteCreateDto request )
+        [HttpPost]
+        [Route( "api/RentController/AgendamentoCliente" )]
+        public async Task<ActionResult<Car>> AgendamentoCliente( [FromBody]AgendamentoForm form )
         {
-
-        }
-
-        //-------------------------------------------------------------
-        [HttpGet]
-        [Route( "api/RentController/CreateAgendamento" )]
-        public async Task<ActionResult<List<Agendamento>>> CreateAgendamento( AgendamentoCreateDto request )
-        {
-            var newAgendamento = new Agendamento
+            if( form.isFormValid() )
             {
-                Car = request.car,
-                Cliente = request.cliente,
-                Data = request.Data
-            };
+                CmdAgendamento cmd = new CmdAgendamento( form );
 
-            _context.Agendamentos.Add( newAgendamento );
-            await _context.SaveChangesAsync();
+                await cmd.execCmdAsync( _context );
 
-            return Ok( await _context.Agendamentos.Include( a => a.Car ).ToListAsync());
+                if( cmd.MsgErro.IsNullOrEmpty() )
+                    return Ok( cmd.MsgSucesso );
+                else
+                    return NotFound( cmd.MsgErro );
+            }
+            else
+                return NotFound( form.msgErro );
         }
-
-        //-------------------------------------------------------------
     }
 }

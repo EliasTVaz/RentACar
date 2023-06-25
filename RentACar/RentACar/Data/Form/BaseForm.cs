@@ -1,27 +1,21 @@
-﻿namespace RentACar.Model
+﻿namespace RentACar.Data.Form
 {
-    public class Cliente
+    public abstract class BaseForm
     {
         //-------------------------------------------------------------
         #region viaráveis
         //-------------------------------------------------------------
-        public int                  Id              { get; set; }
-        public string               Nome            { get; set; }
-        public string               Password        { get; set; }
+        public string msgErro { get; protected set; } = string.Empty;
         //-------------------------------------------------------------
         #endregion viaráveis
         //-------------------------------------------------------------
 
         //-------------------------------------------------------------
-        #region construtor
+        #region classes public
         //-------------------------------------------------------------
-        public Cliente()
-        {
-            Nome        = string.Empty;
-            Password    = string.Empty;
-        }
+        public abstract bool isFormValid();
         //-------------------------------------------------------------
-        #endregion construtor
+        #endregion classes public
         //-------------------------------------------------------------
     }
 }

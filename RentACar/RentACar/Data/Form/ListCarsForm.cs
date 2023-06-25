@@ -1,27 +1,27 @@
-﻿namespace RentACar.Model
+﻿using Microsoft.IdentityModel.Tokens;
+namespace RentACar.Data.Form
 {
-    public class Cliente
+    public class ListCarsForm : BaseForm
     {
         //-------------------------------------------------------------
         #region viaráveis
         //-------------------------------------------------------------
-        public int                  Id              { get; set; }
-        public string               Nome            { get; set; }
-        public string               Password        { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string Modelo { get; set; } = string.Empty;
+        public string Marca { get; set; } = string.Empty;
         //-------------------------------------------------------------
         #endregion viaráveis
         //-------------------------------------------------------------
 
         //-------------------------------------------------------------
-        #region construtor
+        #region classes override
         //-------------------------------------------------------------
-        public Cliente()
+        public override bool isFormValid()
         {
-            Nome        = string.Empty;
-            Password    = string.Empty;
+            return ( true );
         }
         //-------------------------------------------------------------
-        #endregion construtor
+        #endregion classes override
         //-------------------------------------------------------------
     }
 }
